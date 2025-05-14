@@ -16,8 +16,7 @@ def show_wrangler():
         st.warning("Please add your OpenAI API key in Settings to use this feature.")
         return
 
-    col1, col2 = st.columns([2, 1])
-    result_container = st.container(border=True)       
+    result_container = st.container(border=True)
     col1, col2 = result_container.columns([3, 1])
     col2_container = col2.container()
     with col1:
@@ -51,7 +50,6 @@ def page_content():
         page_title="The Prompt Wrangler",
         page_icon="📊",
         layout="wide",
-        # initial_sidebar_state="expanded"
     )
     ch1, ch2 = st.columns([2,1])
     ch1.markdown("# :material/work: The Prompt Wrangler - Synapse Health Homework")
