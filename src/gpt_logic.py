@@ -9,6 +9,7 @@ class ModelResponse:
     content: str = None
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    execution_time_ms: int = 0
 
 
 class ChatGPTClient:
@@ -20,15 +21,24 @@ class ChatGPTClient:
         self.client = OpenAI(api_key=api_key, base_url = base_url)
         self.is_initialized = True
 
-    def ask(self, system_prompt, user_prompt) -> ModelResponse:
+    def ask(self, system_prompt, user_prompt, max_tokens = 16384, temperature = 0) -> ModelResponse:
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}]
+        
+        # Cap max_tokens to the model's limit for completion tokens
+  
+        if max_tokens > ModelDefaults.MODEL_MAX_COMPLETION_TOKENS:
+            max_tokens = ModelDefaults.MODEL_MAX_COMPLETION_TOKENS
+
         try:
+            import time
+            start_time = time.monotonic()
             resp = self.client.chat.completions.create(
                 model = ModelDefaults.active_model,
                 messages = messages,
-                temperature = 0,
+                temperature = temperature,
+                max_tokens=max_tokens,
                 n=1,
                 timeout=15 # seconds
             )
@@ -40,13 +50,14 @@ class ChatGPTClient:
         mr.content = resp.choices[0].message.content.strip()
         mr.prompt_tokens = resp.usage.prompt_tokens
         mr.completion_tokens = resp.usage.completion_tokens
+        mr.execution_time_ms = int((time.monotonic() - start_time) * 1000)
         return mr
 
 
 class ModelDefaults:
     active_model = "gpt-4o-mini"
     active_model_max_context_length = 128000
-
+    MODEL_MAX_COMPLETION_TOKENS = 16384 
 
 class PromptPrep:
     @staticmethod

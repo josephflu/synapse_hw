@@ -25,6 +25,8 @@ def show_wrangler():
     estimated_tokens = PromptPrep.estimate_tokens(prompt_with_data)
     col2_container.caption(f"Model: {ModelDefaults.active_model}")
     col2_container.caption(f"Est. Tokens: {estimated_tokens:,} of max {ModelDefaults.active_model_max_context_length:,}")
+    temperature = int(col2_container.text_input(f"Temperature", value = 0))
+    max_tokens = int(col2_container.text_input(f"Max Tokens", value = 16000))
 
     with col2:
         cont = st.container()
@@ -33,10 +35,10 @@ def show_wrangler():
             if estimated_tokens > ModelDefaults.active_model_max_context_length:
                 st.warning(f"Prompt will be truncated to max tokens.")
             with st.spinner("Running..."):
-                model_resp = gpt.ask(system_prompt, user_prompt)
+                model_resp = gpt.ask(system_prompt, user_prompt, max_tokens, temperature)
                 result_output = result_container.container(border=True)
                 result_output.write(model_resp.content)
-                result_container.caption(f"Actual prompt tokens: {model_resp.prompt_tokens},  completion tokens: {model_resp.completion_tokens}")
+                result_container.caption(f"Actual prompt tokens: {model_resp.prompt_tokens},  completion tokens: {model_resp.completion_tokens}, execution time: {model_resp.execution_time_ms} ms")
         else:
             result_output = result_container.container(border=True)
             result_output.caption("")
