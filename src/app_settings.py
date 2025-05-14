@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 class AppSettings:
     openai_apikey = None
+    last_model_response = None
 
     @staticmethod
     def load():

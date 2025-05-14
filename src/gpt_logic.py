@@ -27,7 +27,6 @@ class ChatGPTClient:
             {"role": "user", "content": user_prompt}]
         
         # Cap max_tokens to the model's limit for completion tokens
-  
         if max_tokens > ModelDefaults.MODEL_MAX_COMPLETION_TOKENS:
             max_tokens = ModelDefaults.MODEL_MAX_COMPLETION_TOKENS
 
@@ -39,8 +38,7 @@ class ChatGPTClient:
                 messages = messages,
                 temperature = temperature,
                 max_tokens=max_tokens,
-                n=1,
-                timeout=15 # seconds
+                n=1
             )
         except OpenAIError as e:
             raise Exception("OpenAI API error", e)

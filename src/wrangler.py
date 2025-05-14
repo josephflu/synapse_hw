@@ -41,9 +41,33 @@ def show_wrangler():
                 st.warning(f"Prompt will be truncated to max tokens.")
             with st.spinner("Running..."):
                 model_resp = gpt.ask(system_prompt, user_prompt, max_tokens, temperature)
+                app.last_model_response = model_resp.content
                 result_output = result_container.container(border=True)
-                result_output.write(model_resp.content)
+                result_output.json(model_resp.content)
                 result_container.caption(f"Actual prompt tokens: {model_resp.prompt_tokens},  completion tokens: {model_resp.completion_tokens}, execution time: {model_resp.execution_time_ms} ms")
+        if app.last_model_response:
+            # if cont.button(":material/download: Download JSON", use_container_width=True, disabled="model_resp" not in locals()):
+            import json
+            from io import BytesIO
+            
+            # Convert the JSON string to a Python object
+            try:
+                json_data = json.loads(app.last_model_response)
+                # Convert back to a formatted JSON string
+                json_str = json.dumps(json_data, indent=2)
+                
+                # Create a download button for the JSON file
+                json_bytes = json_str.encode('utf-8')
+                st.download_button(
+                    label="Click to download JSON",
+                    data=BytesIO(json_bytes),
+                    file_name="medical_device_order.json",
+                    mime="application/json"
+                )
+            except json.JSONDecodeError:
+                st.error("The response is not valid JSON and cannot be downloaded.")
+            except NameError:
+                st.warning("No results available to download.")
         else:
             result_output = result_container.container(border=True)
             result_output.caption("")
