@@ -9,17 +9,17 @@ class ChatGPTClient:
         base_url = None
         if not api_key:
             raise Exception("api_key is required")        
-        self.model = 'gpt-4o-mini'
+        self.model = ModelDefaults.active_model
         self.is_initialized = False
         self.client = OpenAI(api_key=api_key, base_url = base_url)
         self.is_initialized = True
 
-    def ask(self, prompt):
+    def ask(self, system_prompt, user_prompt):
         completion = self.client.chat.completions.create(
             model=self.model,
             messages=[
-                {"role": "system", "content": "You are an expert at analyzing Tableau Bridge logs and summarizing interesting findings like number of errors and what the solutions to the errors is."},
-                {"role": "user", "content": prompt}],
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}],
             temperature=0,
             stream=True,
             n=1,
@@ -44,3 +44,8 @@ class ChatGPTClient:
                     if content:
                         f.write(content)
             f.write("\n")
+
+
+class ModelDefaults:
+    active_model = "gpt-4o-mini"
+    active_model_max_context_length = 128000

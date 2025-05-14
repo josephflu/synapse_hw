@@ -1,0 +1,12 @@
+[server]
+address = "localhost"
+runOnSave = true
+[browser]
+gatherUsageStats = false
+[client]
+toolbarMode = "minimal" #top right streamlit toolbar.
+showErrorDetails = "full"
+[runner]
+magicEnabled = false
+[theme]
+base="light"

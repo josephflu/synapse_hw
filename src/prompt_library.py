@@ -1,7 +1,7 @@
 
 
 class PromptLibrary:
-    default_prompt = """
+    default_system_prompt = """
 Parse this DME doctor request and format as json. Here are some examples.
 
 Input Examples
@@ -28,7 +28,6 @@ Target Output: json {   "product": "CPAP supplies",   "components": ["fu
 
 
 class PromptPrep:
-    max_prompt_token_length_o1mini = 128000
 
     @staticmethod
     def estimate_tokens(prompt: str) -> int:
