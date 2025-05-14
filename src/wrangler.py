@@ -1,8 +1,8 @@
 import streamlit as st
 
 from src.app_settings import APP_SETTINGS
-from src.prompt_library import PromptLibrary, PromptPrep
-from src.gpt_logic import ChatGPTClient, ModelDefaults
+from src.prompt_library import PromptLibrary
+from src.gpt_logic import ChatGPTClient, ModelDefaults, PromptPrep
 
 
 def show_wrangler():
@@ -33,11 +33,14 @@ def show_wrangler():
             if estimated_tokens > ModelDefaults.active_model_max_context_length:
                 st.warning(f"Prompt will be truncated to max tokens.")
             with st.spinner("Running..."):
-                completion_stream = gpt.ask(system_prompt, user_prompt)
-                result_container.write_stream(completion_stream)
+                model_resp = gpt.ask(system_prompt, user_prompt)
+                result_output = result_container.container(border=True)
+                result_output.write(model_resp.content)
+                result_container.caption(f"Actual prompt tokens: {model_resp.prompt_tokens},  completion tokens: {model_resp.completion_tokens}")
         else:
-            result_container.info("Structured JSON will be output here.")
-                
+            result_output = result_container.container(border=True)
+            result_output.caption("")
+
 
 def page_content():
     st.set_page_config(
