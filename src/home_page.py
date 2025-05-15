@@ -8,6 +8,13 @@ from src.gpt_logic import ChatGPTClient, ModelDefaults, PromptPrep
 import pandas as pd
 import json
 
+def check_json_format(content, result_container):
+    try:
+        json_output = json.loads(content)
+        result_container.caption("JSON format is correct.")
+    except json.JSONDecodeError:
+        result_container.error("The response is not valid JSON and cannot be displayed.")
+
 def show_wrangler():
     app = APP_SETTINGS
 
@@ -55,6 +62,7 @@ def show_wrangler():
                     file_name=f"parsed_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                     mime="application/json"
                 )
+                check_json_format(model_resp.content, result_container)
 
 
 def page_content():
@@ -67,9 +75,7 @@ def page_content():
     ch1, ch2 = st.columns([2,1])
     ch1.markdown("# 🏥 Medical Device Order Parser")
     st.info("Convert unstructured medical device orders into structured JSON format. This tool extracts key information such as device type, provider, diagnosis, and specific attributes.")
-
     show_wrangler()
-
 
 page_content()
 

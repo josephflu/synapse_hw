@@ -30,7 +30,7 @@ The goal is to provide an interface to:
     ```
 3.  **Launch**:
     ```bash
-    streamlit run src/wrangler.py
+    python debug_streamlit.py
     ```
     The app will open in your browser at http://localhost:8502
 
@@ -43,7 +43,7 @@ The goal is to provide an interface to:
 
 ## Project Files
 
-*   `src/wrangler.py`: Main Streamlit application.
+*   `src/home_page.py`: Main Streamlit application.
 *   `src/gpt_logic.py`: OpenAI client and data handling (`ChatGPTClient`, `ModelResponse`).
 *   `src/app_settings.py`: Loads API key (from `.env`).
 *   `src/prompt_library.py`: Provides default prompts.
