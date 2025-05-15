@@ -1,17 +1,21 @@
-#  The Prompt Wrangler - 
+#  Medical Device Order Parser
 
 
 ## Background
 
-Doctors submit unstructured clinical notes (e.g., _"Patient needs a CPAP with full face mask and humidifier. AHI > 20. Ordered by Dr. Cameron."_). This tool helps extract structured data (JSON) using an LLM.
-This utility will help fine tune LLM prompts to optimize conversion of NLP input to structured output.
+> Doctors submit unstructured clinical notes (e.g., _"Patient needs a CPAP with full face mask and humidifier. AHI > 20. Ordered by Dr. Cameron."_). This tool helps extract structured data (JSON) using an LLM.
+> This utility will help fine tune LLM prompts to optimize conversion of NLP input to structured output.
 
 The goal is to provide an interface to:
 *   Input system and user prompts.
 *   Adjust LLM parameters (temperature, max_tokens).
 *   Send to the LLM model and display the structured output.
 *   Show token usage and response time.
-*   
+
+##  Screenshot
+
+![Screenshot of the application interface](docs/img.png)
+
 
 ##  How to Run
 
@@ -47,16 +51,21 @@ The goal is to provide an interface to:
 
 
 ## Next Steps
-There are quite a few next steps we could take for this project.
+
+> There are quite a few next steps we could take for this project.
+
 #### Features to Add
 * Add the ability to import CSV or json files for easier bulk processing and bulk testing
 * Build a testing framework to measure performance of the system and score result confidence (measure LLM performance, and prompt performance, and other parameters)
 * Keep track of historical Prompts and score those Prompts based on results.
+
 #### Additional Data
 * Add a confidence score to the results
 * Historical scores of various prompts and LLMs
+
 #### System Improvements
 * Build an API that can be called by a production system to parse NPL DME queries into json
 * Build an Agent in Langchain which can use a React loop to iterate on the results and verify correctness, check input against multiple LLMs, guarantee correct response format, etc.
+
 ### Architecture Improvements
 * break application into layers (UI, logic, data layer) for more modular design as we scale.
