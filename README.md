@@ -30,7 +30,7 @@ The goal is to provide an interface to:
     ```
 3.  **Launch**:
     ```bash
-    python debug_streamlit.py
+    python start.py
     ```
     The app will open in your browser at http://localhost:8502
 
