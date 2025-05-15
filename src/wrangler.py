@@ -1,9 +1,12 @@
+from datetime import datetime
+
 import streamlit as st
 
 from src.app_settings import APP_SETTINGS
 from src.prompt_library import PromptLibrary
 from src.gpt_logic import ChatGPTClient, ModelDefaults, PromptPrep
-
+import pandas as pd
+import json
 
 def show_wrangler():
     app = APP_SETTINGS
@@ -23,7 +26,7 @@ def show_wrangler():
     prompt_with_data = f"{system_prompt} \n```{user_prompt}```"
     estimated_tokens = PromptPrep.estimate_tokens(prompt_with_data)
     col2_container.caption(f"Model: {ModelDefaults.active_model}")
-    col2_container.caption(f"Est. Tokens: {estimated_tokens:,} of max {ModelDefaults.active_model_max_context_length:,}")
+    col2_container.caption(f"Est. input tokens: {estimated_tokens:,} of max {ModelDefaults.active_model_max_context_length:,}")
     temperature = int(col2_container.text_input(f"Temperature", value = 0))
     max_tokens = int(col2_container.text_input(f"Max Tokens", value = 16000))
 
@@ -43,34 +46,15 @@ def show_wrangler():
                 model_resp = gpt.ask(system_prompt, user_prompt, max_tokens, temperature)
                 app.last_model_response = model_resp.content
                 result_output = result_container.container(border=True)
-                result_output.json(model_resp.content)
+                result_output.write(model_resp.content)
                 result_container.caption(f"Actual prompt tokens: {model_resp.prompt_tokens},  completion tokens: {model_resp.completion_tokens}, execution time: {model_resp.execution_time_ms} ms")
-        if app.last_model_response:
-            # if cont.button(":material/download: Download JSON", use_container_width=True, disabled="model_resp" not in locals()):
-            import json
-            from io import BytesIO
-            
-            # Convert the JSON string to a Python object
-            try:
-                json_data = json.loads(app.last_model_response)
-                # Convert back to a formatted JSON string
-                json_str = json.dumps(json_data, indent=2)
-                
-                # Create a download button for the JSON file
-                json_bytes = json_str.encode('utf-8')
-                st.download_button(
-                    label="Click to download JSON",
-                    data=BytesIO(json_bytes),
-                    file_name="medical_device_order.json",
+
+                result_container.download_button(
+                    label="Download JSON",
+                    data=model_resp.content,
+                    file_name=f"parsed_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                     mime="application/json"
                 )
-            except json.JSONDecodeError:
-                st.error("The response is not valid JSON and cannot be downloaded.")
-            except NameError:
-                st.warning("No results available to download.")
-        else:
-            result_output = result_container.container(border=True)
-            result_output.caption("")
 
 
 def page_content():
